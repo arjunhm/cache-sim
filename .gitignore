@@ -1,1 +1,4 @@
 .*.swp
+*.gch
+*.out
+csim

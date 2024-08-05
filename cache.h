@@ -7,7 +7,7 @@
 typedef struct Line {
 	u8 tag;
 	bool valid;
-}
+} Line;
 
 typedef struct Set {
 	Line *lines;

@@ -13,6 +13,7 @@ typedef struct Block {
 typedef struct Line {
   bool valid;
   u64 tag;
+  u64 timestamp;
   // Block *blocks;
 } Line;
 
@@ -40,5 +41,17 @@ typedef struct Cache {
   Stats *stats;
 } Cache;
 
+// init
 void *cache_new(uint32_t set_count, uint32_t line_count, uint32_t block_count);
 void cache_free(Cache *c);
+// display
+void display(Cache *c);
+void display_stats(Stats *s);
+// helper
+u64 get_block_offset(Cache *c, u64 address);
+u64 get_set_index(Cache *c, u64 address);
+u64 get_tag(Cache *c, u64 address);
+// operations
+u32 evict(Cache *c, u32 set_index);
+void store(Cache *c, u32 set_index, u32 line_index, u64 tag);
+void read(Cache *c, u64 address);

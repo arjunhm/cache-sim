@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 bool is_power_2(int n) {
   int count = 0;
@@ -68,6 +69,7 @@ void *cache_new(u32 set_count, u32 line_count, u32 block_count) {
       Line l = c->sets[i].lines[j];
       l.valid = false;
       l.tag = 0;
+      l.timestamp = 0;
       // TODO alloc blocks
     }
   }
@@ -169,16 +171,29 @@ void test_mask(Cache *c) {
 }
 
 u32 evict(Cache *c, u32 set_index) {
-  // TODO add LRU
+  printf("evicting....\n");
   u32 line_index = 0;
+  u32 min_timestamp = time(NULL);
+
+  for (int i = 0; i < c->sets[set_index].line_count; i++) {
+    Line l = c->sets[set_index].lines[i];
+    if (l.timestamp < min_timestamp) {
+      min_timestamp = l.timestamp;
+      line_index = i;
+    }
+  }
+  printf("li=%d\n", line_index);
+
   if (c->sets[set_index].lines[line_index].tag != 0)
     c->stats->evictions++;
+
   return line_index;
 }
 
 void store(Cache *c, u32 set_index, u32 line_index, u64 tag) {
   c->sets[set_index].lines[line_index].tag = tag;
   c->sets[set_index].lines[line_index].valid = 1;
+  c->sets[set_index].lines[line_index].timestamp = time(NULL);
 }
 
 void read(Cache *c, u64 address) {
@@ -195,13 +210,12 @@ void read(Cache *c, u64 address) {
       c->stats->hits++;
       return;
     }
-    // miss. evict and store
-    else {
-      c->stats->misses++;
-      u32 line_index = evict(c, set_index);
-      store(c, set_index, line_index, tag);
-    }
   }
+
+  // miss. evict and store
+  c->stats->misses++;
+  u32 line_index = evict(c, set_index);
+  store(c, set_index, line_index, tag);
 }
 
 void test_cache(Cache *c) {
@@ -219,7 +233,7 @@ void test_cache(Cache *c) {
 
 int main() {
 
-  Cache *c = cache_new(4, 1, 4);
+  Cache *c = cache_new(2, 2, 4);
   if (c == NULL)
     return 0;
   // display(c);

@@ -1,4 +1,5 @@
 #include "cache.h"
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -93,6 +94,7 @@ void cache_free(Cache *c) {
     free(c->sets[i].lines);
   }
   free(c->sets);
+  free(c->stats);
   free(c);
 }
 
@@ -125,21 +127,18 @@ void display(Cache *c) {
 }
 
 u64 get_block_offset(Cache *c, u64 address) {
-  int64_t mask = ~((0x1L << 63) >> (63 - c->block_bits));
+  int64_t mask = pow(c->block_bits, 2) - 1;
   return (address & mask);
 }
 
 u64 get_set_index(Cache *c, u64 address) {
-  int64_t mask = (0x1L << 63) >> (63 - (c->set_bits + c->block_bits));
-  int64_t block_mask = ~((0x1L << 63) >> (63 - c->block_bits));
-  mask += block_mask;
-  mask = ~mask;
-  return (address & mask) >> c->block_bits;
+  int64_t mask = pow(c->set_bits, 2) - 1;
+  return (address >> c->block_bits) & mask;
 }
 
 u64 get_tag(Cache *c, u64 address) {
-  int64_t mask = (0x1L << 63) >> (c->tag_bits - 1);
-  return (address & mask);
+  int64_t mask = pow(c->tag_bits, 2) - 1;
+  return (address >> (c->set_bits + c->block_bits)) & mask;
 }
 
 void hexprint(u64 addr, u64 result, char *c) {
@@ -241,6 +240,6 @@ int main() {
   // test_mask(c);
   test_cache(c);
 
-  free(c);
+  cache_free(c);
   return 0;
 }

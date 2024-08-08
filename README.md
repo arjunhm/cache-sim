@@ -1,10 +1,10 @@
 ## Cache Simulator
 
-compile your code:
-    `linux> make csim`
+compile your code:  
+    `linux> make csim`  
 
-Check the correctness of your simulator:
-    `linux> ./test-csim`
+Check the correctness of your simulator:  
+    `linux> ./test-csim`  
 
 ```
 csim.c       Your cache simulator  

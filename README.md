@@ -16,3 +16,12 @@ csim-ref*    The executable reference cache simulator
 test-csim*   Tests your cache simulator  
 traces/      Trace files used by test-csim.c  
 ```
+
+### How to run
+
+Cache Simulator
+`./csim -s <set-bits> -E <line-count> -b <block-bits> -t <trace-file> -v (for verbosity)`  
+
+To compare against reference cache simulator
+`./test-csim`  
+

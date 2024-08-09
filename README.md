@@ -22,6 +22,6 @@ traces/      Trace files used by test-csim.c
 Cache Simulator  
 `./csim -s <set-bits> -E <line-count> -b <block-bits> -t <trace-file> -v (for verbosity)`  
 
-To compare against reference cache simulator
+To compare against reference cache simulator  
 `./test-csim`  
 

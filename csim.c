@@ -176,7 +176,7 @@ void cache_read(Cache *c, u64 address, int size) {
   // miss
   c->stats->misses++;
   if (v)
-      printf("hit ");
+      printf("miss ");
 
   int line_index = evict(c, set_index);
   // replace

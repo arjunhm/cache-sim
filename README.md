@@ -36,5 +36,24 @@ Examples:
   `./csim -s 4 -E 1 -b 4 -t traces/yi.trace`  
   `./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace`  
 
+### Tracefiles
 
+Valgrind memory traces have the following form:
+```
+I 0400d7d4,8
+ M 0421c7f0,4
+ L 04f6b868,8
+ S 7ff0005c8,8
+```
+
+Each line denotes one or two memory accesses. The format of each line is  
+`[space]operation address,size`
+
+**Operations**  
+`L` a data load  
+`S` a data store  
+`M` a data modify (data load + data store)  
+
+**address** specifies a 64-bit hexadecimal memory address.   
+**size** specifies the number of bytes accessed by the operation  
 
